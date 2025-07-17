@@ -1,0 +1,71 @@
+[debug] [2025-07-16T09:05:41.356Z] ----------------------------------------------------------------------
+[debug] [2025-07-16T09:05:41.359Z] Command:       /Users/Nafiz/.nvm/versions/node/v22.17.0/bin/node /Users/Nafiz/.nvm/versions/node/v22.17.0/bin/firebase init
+[debug] [2025-07-16T09:05:41.360Z] CLI Version:   14.10.1
+[debug] [2025-07-16T09:05:41.360Z] Platform:      darwin
+[debug] [2025-07-16T09:05:41.360Z] Node Version:  v22.17.0
+[debug] [2025-07-16T09:05:41.361Z] Time:          Wed Jul 16 2025 15:05:41 GMT+0600 (Bangladesh Standard Time)
+[debug] [2025-07-16T09:05:41.362Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-07-16T09:05:41.364Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2025-07-16T09:05:41.413Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-07-16T09:05:41.414Z] > authorizing via signed-in user (nhremon8181@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  /Users/Nafiz/Documents/Projects/Personal/LogQa/qa-time-tracker
+
+[debug] [2025-07-16T09:05:42.069Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2025-07-16T09:05:42.070Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[info] i  If you want to create a project in a Google Cloud organization or folder, please use "firebase projects:create" instead, and return to this command when you've created the project. 
+[debug] [2025-07-16T09:06:19.333Z] Checked if tokens are valid: false, expires at: 1745241170042
+[debug] [2025-07-16T09:06:19.334Z] Checked if tokens are valid: false, expires at: 1745241170042
+[debug] [2025-07-16T09:06:19.334Z] > refreshing access token with scopes: []
+[debug] [2025-07-16T09:06:19.337Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2025-07-16T09:06:19.337Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-07-16T09:06:19.652Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2025-07-16T09:06:19.652Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-07-16T09:06:19.664Z] >>> [apiv2][query] POST https://firebase.googleapis.com/v1/projects:checkProjectId [none]
+[debug] [2025-07-16T09:06:19.664Z] >>> [apiv2][body] POST https://firebase.googleapis.com/v1/projects:checkProjectId {"proposedId":"timetracker"}
+[debug] [2025-07-16T09:06:21.144Z] <<< [apiv2][status] POST https://firebase.googleapis.com/v1/projects:checkProjectId 200
+[debug] [2025-07-16T09:06:21.144Z] <<< [apiv2][body] POST https://firebase.googleapis.com/v1/projects:checkProjectId {"projectIdStatus":"PROJECT_ID_UNAVAILABLE","suggestedProjectId":"timetracker-b17d4"}
+[debug] [2025-07-16T09:06:30.957Z] Checked if tokens are valid: true, expires at: 1752660378652
+[debug] [2025-07-16T09:06:30.965Z] Checked if tokens are valid: true, expires at: 1752660378652
+[debug] [2025-07-16T09:06:30.968Z] >>> [apiv2][query] POST https://firebase.googleapis.com/v1/projects:checkProjectId [none]
+[debug] [2025-07-16T09:06:30.969Z] >>> [apiv2][body] POST https://firebase.googleapis.com/v1/projects:checkProjectId {"proposedId":"timetracker-b1745"}
+[debug] [2025-07-16T09:06:32.375Z] <<< [apiv2][status] POST https://firebase.googleapis.com/v1/projects:checkProjectId 200
+[debug] [2025-07-16T09:06:32.375Z] <<< [apiv2][body] POST https://firebase.googleapis.com/v1/projects:checkProjectId {"projectIdStatus":"PROJECT_ID_AVAILABLE","suggestedProjectId":"timetracker-b1745"}
+[debug] [2025-07-16T09:06:34.697Z] Checked if tokens are valid: true, expires at: 1752660378652
+[debug] [2025-07-16T09:06:34.697Z] Checked if tokens are valid: true, expires at: 1752660378652
+[debug] [2025-07-16T09:06:34.698Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects [none]
+[debug] [2025-07-16T09:06:34.698Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects {"projectId":"timetracker-b1745","name":"timetracker-b1745"}
+[debug] [2025-07-16T09:06:36.196Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects 200
+[debug] [2025-07-16T09:06:36.196Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects {"name":"operations/create_project.global.5930926834626944274"}
+[debug] [2025-07-16T09:06:36.197Z] Checked if tokens are valid: true, expires at: 1752660378652
+[debug] [2025-07-16T09:06:36.197Z] Checked if tokens are valid: true, expires at: 1752660378652
+[debug] [2025-07-16T09:06:36.197Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.5930926834626944274 [none]
+[debug] [2025-07-16T09:06:37.475Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.5930926834626944274 200
+[debug] [2025-07-16T09:06:37.476Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.5930926834626944274 {"name":"operations/create_project.global.5930926834626944274","metadata":{"@type":"type.googleapis.com/google.cloudresourcemanager.v1.ProjectCreationStatus","ready":true},"done":true,"error":{"code":8,"message":"The project cannot be created because you have exceeded your allotted project quota.","details":[{"@type":"type.googleapis.com/google.rpc.QuotaFailure","violations":[{"description":"The project cannot be created because you have exceeded your allotted project quota."}]}]}}
+[debug] [2025-07-16T09:06:37.721Z] FirebaseError: The project cannot be created because you have exceeded your allotted project quota.
+    at OperationPoller.poll (/Users/Nafiz/.nvm/versions/node/v22.17.0/lib/node_modules/firebase-tools/lib/operation-poller.js:24:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async createCloudProject (/Users/Nafiz/.nvm/versions/node/v22.17.0/lib/node_modules/firebase-tools/lib/management/projects.js:215:29)
+    at async createFirebaseProjectAndLog (/Users/Nafiz/.nvm/versions/node/v22.17.0/lib/node_modules/firebase-tools/lib/management/projects.js:83:9)
+    at async promptAndCreateNewProject (/Users/Nafiz/.nvm/versions/node/v22.17.0/lib/node_modules/firebase-tools/lib/init/features/project.js:31:12)
+    at async Object.doSetup (/Users/Nafiz/.nvm/versions/node/v22.17.0/lib/node_modules/firebase-tools/lib/init/features/project.js:85:31)
+    at async init (/Users/Nafiz/.nvm/versions/node/v22.17.0/lib/node_modules/firebase-tools/lib/init/index.js:57:13)
+    at async Command.initAction [as actionFn] (/Users/Nafiz/.nvm/versions/node/v22.17.0/lib/node_modules/firebase-tools/lib/commands/init.js:198:5)
+[error] 
+[error] Error: Failed to create project. See firebase-debug.log for more info.
