@@ -22,6 +22,15 @@ export default function BucketPage() {
   const [todoLoading, setTodoLoading] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [error, setError] = useState('');
+  const [page, setPage] = useState(1);
+  const todosPerPage = 10;
+  const totalPages = Math.ceil(todos.length / todosPerPage);
+  // Sort todos by createdAt descending before paginating
+  const sortedTodos = [...todos].sort((a, b) => {
+    if (!a.createdAt || !b.createdAt) return 0;
+    return b.createdAt.seconds - a.createdAt.seconds;
+  });
+  const paginatedTodos = sortedTodos.slice((page - 1) * todosPerPage, page * todosPerPage);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
@@ -43,7 +52,7 @@ export default function BucketPage() {
 
   const handleAddTodo = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newTodo.projectName || !user) return;
+    if (!newTodo.projectName || !newTodo.description || !user) return;
     setTodoLoading(true);
     setError('');
     try {
@@ -105,14 +114,14 @@ export default function BucketPage() {
         <form onSubmit={handleAddTodo} style={{ marginBottom: 16 }}>
           <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={2} alignItems={{ md: 'flex-end' }}>
             <TextField label="Project Name" value={newTodo.projectName} onChange={e => setNewTodo({ ...newTodo, projectName: e.target.value })} required sx={{ background: '#fff' }} size="small" />
-            <TextField label="Description" value={newTodo.description} onChange={e => setNewTodo({ ...newTodo, description: e.target.value })} sx={{ background: '#fff' }} size="small" />
+            <TextField label="Description" value={newTodo.description} onChange={e => setNewTodo({ ...newTodo, description: e.target.value })} sx={{ background: '#fff' }} size="small" required />
             <Button type="submit" variant="contained" color="primary" disabled={todoLoading || !user} sx={{ minWidth: 120, fontWeight: 600, height: 40, boxShadow: 2, borderRadius: 2, textTransform: 'none', letterSpacing: 0.5 }}>Add Todo</Button>
           </Box>
         </form>
         {error && <Typography color="error" mb={2}>{error}</Typography>}
         <List>
-          {todos.length === 0 && <Typography color="text.secondary" sx={{ px: 2, py: 1 }}>No todos in your bucket list.</Typography>}
-          {todos.map((todo, idx) => (
+          {paginatedTodos.length === 0 && <Typography color="text.secondary" sx={{ px: 2, py: 1 }}>No todos in your bucket list.</Typography>}
+          {paginatedTodos.map((todo, idx) => (
             <div key={todo.id}>
               <ListItem sx={{ background: idx % 2 === 0 ? '#fff' : '#f9fafb', borderRadius: 2, mb: 1, '&:hover': { background: '#e3eafc' } }}
                 secondaryAction={
@@ -129,10 +138,31 @@ export default function BucketPage() {
                   secondary={<span style={{ color: '#555' }}>{todo.description}</span>}
                 />
               </ListItem>
-              {idx < todos.length - 1 && <Divider />}
+              {idx < paginatedTodos.length - 1 && <Divider />}
             </div>
           ))}
         </List>
+        {todos.length > todosPerPage && (
+          <Box width="100%" display="flex" justifyContent="flex-start" alignItems="center" mt={2} gap={2}>
+            <Button
+              variant="outlined"
+              disabled={page === 1}
+              onClick={() => setPage(page - 1)}
+            >
+              Previous
+            </Button>
+            <Typography variant="body1" sx={{ mx: 2, display: 'inline-block', whiteSpace: 'nowrap' }}>
+              Page {page} of {totalPages}
+            </Typography>
+            <Button
+              variant="outlined"
+              disabled={page === totalPages}
+              onClick={() => setPage(page + 1)}
+            >
+              Next
+            </Button>
+          </Box>
+        )}
         {todoLoading && <Box mt={2}><CircularProgress size={24} /></Box>}
       </Paper>
     </Box>

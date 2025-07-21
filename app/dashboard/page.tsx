@@ -42,7 +42,12 @@ export default function DashboardPage() {
   const [editLoading, setEditLoading] = useState(false);
   const [page, setPage] = useState(1);
   const tasksPerPage = 10;
-  const sortedLogs = [...logs].sort(compareDateTime);
+  // Sort logs by date and time descending before paginating
+  const sortedLogs = [...logs].sort((a, b) => {
+    const dateA = new Date(`${a.date} ${a.time}`);
+    const dateB = new Date(`${b.date} ${b.time}`);
+    return dateB.getTime() - dateA.getTime();
+  });
   const paginatedLogs = sortedLogs.slice((page - 1) * tasksPerPage, page * tasksPerPage);
   const totalPages = Math.ceil(sortedLogs.length / tasksPerPage);
   const handlePageChange = (_: any, value: number) => setPage(value);

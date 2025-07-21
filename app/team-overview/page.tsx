@@ -31,7 +31,12 @@ export default function AdminPage() {
   const [editLoading, setEditLoading] = useState(false);
   const [page, setPage] = useState(1);
   const rowsPerPage = 10;
-  const sortedLogs = [...filteredLogs].sort(compareDateTime);
+  // Sort filteredLogs by date and time descending before paginating
+  const sortedLogs = [...filteredLogs].sort((a, b) => {
+    const dateA = new Date(`${a.date} ${a.time}`);
+    const dateB = new Date(`${b.date} ${b.time}`);
+    return dateB.getTime() - dateA.getTime();
+  });
   const paginatedLogs = sortedLogs.slice((page - 1) * rowsPerPage, page * rowsPerPage);
   const handlePageChange = (_: any, value: number) => setPage(value);
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,7 +102,11 @@ export default function AdminPage() {
   // Export only the filtered logs
   const handleExport = () => {
     // Sort filteredLogs before exporting
-    const sortedExportLogs = [...filteredLogs].sort(compareDateTime);
+    const sortedExportLogs = [...filteredLogs].sort((a, b) => {
+      const dateA = new Date(`${a.date} ${a.time}`);
+      const dateB = new Date(`${b.date} ${b.time}`);
+      return dateB.getTime() - dateA.getTime();
+    });
     const csv = Papa.unparse(sortedExportLogs.map(log => ({
       'User Name': log.userName,
       'Date': log.date,
