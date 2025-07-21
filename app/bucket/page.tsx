@@ -7,8 +7,16 @@ import { onAuthStateChanged } from 'firebase/auth';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 function getTodayDate() {
-  const today = new Date();
-  return today.toISOString().slice(0, 10);
+  // Get date in Bangladesh time zone (Asia/Dhaka)
+  const now = new Date();
+  const formatter = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Dhaka',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+  // en-CA gives YYYY-MM-DD
+  return formatter.format(now);
 }
 
 function getCurrentTime() {

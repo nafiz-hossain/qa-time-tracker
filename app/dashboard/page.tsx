@@ -13,8 +13,16 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import DialogContentText from '@mui/material/DialogContentText';
 
 function getTodayDate() {
-  const today = new Date();
-  return today.toISOString().slice(0, 10);
+  // Get date in Bangladesh time zone (Asia/Dhaka)
+  const now = new Date();
+  const formatter = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Dhaka',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+  // en-CA gives YYYY-MM-DD
+  return formatter.format(now);
 }
 
 function getCurrentTime() {
@@ -92,19 +100,7 @@ export default function DashboardPage() {
     setError('');
     try {
       const userName = user.displayName || user.email || 'Unknown';
-      // Check for duplicate
-      const q = query(
-        collection(db, 'tasks'),
-        where('userId', '==', user.uid),
-        where('date', '==', getTodayDate()),
-        where('taskTitle', '==', task.taskTitle)
-      );
-      const existing = await getDocs(q);
-      if (!existing.empty) {
-        setError('You already have a task with this title today.');
-        setLoading(false);
-        return;
-      }
+      // Remove duplicate check so duplicates are allowed
       const newTask = {
         userId: user.uid,
         userName,
@@ -113,7 +109,6 @@ export default function DashboardPage() {
         date: getTodayDate(),
         time: getCurrentTime(),
       };
-      console.log(newTask);
       await addDoc(collection(db, 'tasks'), newTask);
       setTask({ taskTitle: '', description: '' });
       fetchTodayTasks(user);

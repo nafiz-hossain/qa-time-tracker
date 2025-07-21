@@ -260,7 +260,7 @@ export default function AdminPage() {
             <Table sx={{ minWidth: 650 }}>
               <TableHead>
                 <TableRow sx={{ background: '#f0f4f8' }}>
-                  <TableCell sx={{ width: 80 }}>User Name</TableCell>
+                  <TableCell sx={{ width: 150 }}>User Name</TableCell>
                   <TableCell sx={{ width: 100, whiteSpace: 'nowrap' }}>Date</TableCell>
                   <TableCell sx={{ width: 200 }}>Project Name</TableCell>
                   <TableCell sx={{ width: 'auto' }}>Description</TableCell>
