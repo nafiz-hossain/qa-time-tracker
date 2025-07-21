@@ -32,7 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               QA Time Tracker
             </Typography>
             <Box display="flex" alignItems="center" gap={2}>
-              <Button color="inherit" component={Link} href="/bucket">Bucket</Button>
+              <Button color="inherit" component={Link} href="/bucket">My Bucket</Button>
               <Button color="inherit" component={Link} href="/dashboard">My Tasks</Button>
               <Button color="inherit" component={Link} href="/team-overview">Team Overview</Button>
               {loading ? (
