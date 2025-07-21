@@ -251,11 +251,11 @@ export default function AdminPage() {
             <Table sx={{ minWidth: 650 }}>
               <TableHead>
                 <TableRow sx={{ background: '#f0f4f8' }}>
-                  <TableCell sx={{ fontWeight: 700 }}>User Name</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Date</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Project Name</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Description</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Time</TableCell>
+                  <TableCell sx={{ width: 100 }}>User Name</TableCell>
+                  <TableCell sx={{ width: 100, whiteSpace: 'nowrap' }}>Date</TableCell>
+                  <TableCell sx={{ width: 140 }}>Project Name</TableCell>
+                  <TableCell sx={{ width: 'auto' }}>Description</TableCell>
+                  <TableCell sx={{ width: 90, whiteSpace: 'nowrap' }}>Time</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -266,10 +266,10 @@ export default function AdminPage() {
                 ) : (
                   paginatedLogs.map((log, idx) => (
                     <TableRow key={log.id} sx={{ background: idx % 2 === 0 ? '#fff' : '#f9fafb', '&:hover': { background: '#e3eafc' } }}>
-                      <TableCell>{log.userName}</TableCell>
-                      <TableCell>{log.date}</TableCell>
-                      <TableCell>{log.taskTitle}</TableCell>
-                      <TableCell>
+                      <TableCell sx={{ width: 100 }}>{log.userName}</TableCell>
+                      <TableCell sx={{ width: 100, whiteSpace: 'nowrap' }}>{log.date}</TableCell>
+                      <TableCell sx={{ width: 140 }}>{log.taskTitle}</TableCell>
+                      <TableCell sx={{ width: 'auto' }}>
                         {log.description}
                         <IconButton edge="end" aria-label="edit" size="small" onClick={() => handleEditClick(log)} sx={{ ml: 1 }}>
                           <EditIcon fontSize="small" />
@@ -280,7 +280,7 @@ export default function AdminPage() {
                           </IconButton>
                         )}
                       </TableCell>
-                      <TableCell>{log.time}</TableCell>
+                      <TableCell sx={{ width: 90, whiteSpace: 'nowrap' }}>{log.time}</TableCell>
                     </TableRow>
                   ))
                 )}
