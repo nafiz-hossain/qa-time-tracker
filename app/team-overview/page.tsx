@@ -11,6 +11,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import TablePagination from '@mui/material/TablePagination';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DialogContentText from '@mui/material/DialogContentText';
+import Pagination from '@mui/material/Pagination';
 
 export default function AdminPage() {
   const [logs, setLogs] = useState<any[]>([]);
@@ -28,9 +29,11 @@ export default function AdminPage() {
   const [editTask, setEditTask] = useState<any>(null);
   const [editFields, setEditFields] = useState({ taskTitle: '', description: '' });
   const [editLoading, setEditLoading] = useState(false);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const handleChangePage = (_: any, newPage: number) => setPage(newPage);
+  const [page, setPage] = useState(1);
+  const rowsPerPage = 10;
+  const sortedLogs = [...filteredLogs].sort(compareDateTime);
+  const paginatedLogs = sortedLogs.slice((page - 1) * rowsPerPage, page * rowsPerPage);
+  const handlePageChange = (_: any, value: number) => setPage(value);
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
@@ -194,9 +197,6 @@ export default function AdminPage() {
     return dateB.getTime() - dateA.getTime();
   }
 
-  const sortedLogs = [...filteredLogs].sort(compareDateTime);
-  const paginatedLogs = sortedLogs.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-
   return (
     <Box sx={{ p: { xs: 1, md: 4 }, minHeight: '100vh', background: '#f6f8fa' }}>
       <Typography variant="h4" mb={3} fontWeight={700} color="primary.main">Admin Dashboard</Typography>
@@ -251,9 +251,9 @@ export default function AdminPage() {
             <Table sx={{ minWidth: 650 }}>
               <TableHead>
                 <TableRow sx={{ background: '#f0f4f8' }}>
-                  <TableCell sx={{ width: 100 }}>User Name</TableCell>
+                  <TableCell sx={{ width: 80 }}>User Name</TableCell>
                   <TableCell sx={{ width: 100, whiteSpace: 'nowrap' }}>Date</TableCell>
-                  <TableCell sx={{ width: 140 }}>Project Name</TableCell>
+                  <TableCell sx={{ width: 200 }}>Project Name</TableCell>
                   <TableCell sx={{ width: 'auto' }}>Description</TableCell>
                   <TableCell sx={{ width: 90, whiteSpace: 'nowrap' }}>Time</TableCell>
                 </TableRow>
@@ -266,9 +266,9 @@ export default function AdminPage() {
                 ) : (
                   paginatedLogs.map((log, idx) => (
                     <TableRow key={log.id} sx={{ background: idx % 2 === 0 ? '#fff' : '#f9fafb', '&:hover': { background: '#e3eafc' } }}>
-                      <TableCell sx={{ width: 100 }}>{log.userName}</TableCell>
+                      <TableCell sx={{ width: 80 }}>{log.userName}</TableCell>
                       <TableCell sx={{ width: 100, whiteSpace: 'nowrap' }}>{log.date}</TableCell>
-                      <TableCell sx={{ width: 140 }}>{log.taskTitle}</TableCell>
+                      <TableCell sx={{ width: 200 }}>{log.taskTitle}</TableCell>
                       <TableCell sx={{ width: 'auto' }}>
                         {log.description}
                         <IconButton edge="end" aria-label="edit" size="small" onClick={() => handleEditClick(log)} sx={{ ml: 1 }}>
@@ -285,15 +285,27 @@ export default function AdminPage() {
                   ))
                 )}
               </TableBody>
-              <TablePagination
-                rowsPerPageOptions={[10, 20, 50]}
-                component="div"
-                count={filteredLogs.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-              />
+              {sortedLogs.length > rowsPerPage && (
+                <Box width="100%" display="flex" justifyContent="center" alignItems="center" mt={2} gap={2}>
+                  <Button
+                    variant="outlined"
+                    disabled={page === 1}
+                    onClick={() => setPage(page - 1)}
+                  >
+                    Previous
+                  </Button>
+                  <Typography variant="body1" sx={{ mx: 2, display: 'inline-block', whiteSpace: 'nowrap' }}>
+                    Page {page} of {Math.ceil(sortedLogs.length / rowsPerPage)}
+                  </Typography>
+                  <Button
+                    variant="outlined"
+                    disabled={page === Math.ceil(sortedLogs.length / rowsPerPage)}
+                    onClick={() => setPage(page + 1)}
+                  >
+                    Next
+                  </Button>
+                </Box>
+              )}
             </Table>
           </TableContainer>
         )}

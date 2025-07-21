@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Box, Typography, Paper, Button, TextField, List, ListItem, ListItemText, Divider, CircularProgress } from '@mui/material';
 import { db, auth } from '../firebase';
-import { collection, addDoc, query, where, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, doc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import React from 'react';
 import { useRouter } from 'next/navigation';
@@ -44,6 +44,7 @@ export default function DashboardPage() {
   const tasksPerPage = 10;
   const sortedLogs = [...logs].sort(compareDateTime);
   const paginatedLogs = sortedLogs.slice((page - 1) * tasksPerPage, page * tasksPerPage);
+  const totalPages = Math.ceil(sortedLogs.length / tasksPerPage);
   const handlePageChange = (_: any, value: number) => setPage(value);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteTask, setDeleteTask] = useState<any>(null);
@@ -53,8 +54,9 @@ export default function DashboardPage() {
   React.useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
       setUser(u);
-      if (u) fetchTodayTasks(u);
-      else router.push('/login');
+      if (u) {
+        fetchTodayTasks(u);
+      } else router.push('/login');
     });
     return () => unsubscribe();
   }, []);
@@ -217,15 +219,25 @@ export default function DashboardPage() {
             </div>
           ))}
         </List>
-        {logs.length > tasksPerPage && (
-          <Box display="flex" justifyContent="center" mt={2}>
-            <Pagination
-              count={Math.ceil(logs.length / tasksPerPage)}
-              page={page}
-              onChange={handlePageChange}
-              color="primary"
-              shape="rounded"
-            />
+        {sortedLogs.length > tasksPerPage && (
+          <Box width="100%" display="flex" justifyContent="flex-start" alignItems="center" mt={2} gap={2}>
+            <Button
+              variant="outlined"
+              disabled={page === 1}
+              onClick={() => setPage(page - 1)}
+            >
+              Previous
+            </Button>
+            <Typography variant="body1" sx={{ mx: 2, display: 'inline-block', whiteSpace: 'nowrap' }}>
+              Page {page} of {totalPages}
+            </Typography>
+            <Button
+              variant="outlined"
+              disabled={page === totalPages}
+              onClick={() => setPage(page + 1)}
+            >
+              Next
+            </Button>
           </Box>
         )}
       </Paper>
