@@ -276,13 +276,15 @@ export default function AdminPage() {
                       <TableCell sx={{ width: 200 }}>{log.taskTitle}</TableCell>
                       <TableCell sx={{ width: 'auto' }}>
                         {log.description}
-                        <IconButton edge="end" aria-label="edit" size="small" onClick={() => handleEditClick(log)} sx={{ ml: 1 }}>
-                          <EditIcon fontSize="small" />
-                        </IconButton>
                         {user && log.userId === user.uid && (
-                          <IconButton edge="end" aria-label="delete" color="error" size="small" onClick={() => handleDeleteClick(log)} sx={{ ml: 1 }}>
-                            <DeleteIcon fontSize="small" />
-                          </IconButton>
+                          <>
+                            <IconButton edge="end" aria-label="edit" size="small" onClick={() => handleEditClick(log)} sx={{ ml: 1 }}>
+                              <EditIcon fontSize="small" />
+                            </IconButton>
+                            <IconButton edge="end" aria-label="delete" color="error" size="small" onClick={() => handleDeleteClick(log)} sx={{ ml: 1 }}>
+                              <DeleteIcon fontSize="small" />
+                            </IconButton>
+                          </>
                         )}
                       </TableCell>
                       <TableCell sx={{ width: 90, whiteSpace: 'nowrap' }}>{log.time}</TableCell>
