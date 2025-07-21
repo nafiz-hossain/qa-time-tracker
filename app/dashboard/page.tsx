@@ -22,6 +22,13 @@ function getCurrentTime() {
   return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
+function compareDateTime(a: any, b: any) {
+  // Combine date and time into a Date object for accurate comparison
+  const dateA = new Date(`${a.date} ${a.time}`);
+  const dateB = new Date(`${b.date} ${b.time}`);
+  return dateB.getTime() - dateA.getTime();
+}
+
 export default function DashboardPage() {
   const [task, setTask] = useState({ taskTitle: '', description: '' });
   const [logs, setLogs] = useState<any[]>([]);
@@ -35,7 +42,8 @@ export default function DashboardPage() {
   const [editLoading, setEditLoading] = useState(false);
   const [page, setPage] = useState(1);
   const tasksPerPage = 10;
-  const paginatedLogs = logs.slice((page - 1) * tasksPerPage, page * tasksPerPage);
+  const sortedLogs = [...logs].sort(compareDateTime);
+  const paginatedLogs = sortedLogs.slice((page - 1) * tasksPerPage, page * tasksPerPage);
   const handlePageChange = (_: any, value: number) => setPage(value);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteTask, setDeleteTask] = useState<any>(null);

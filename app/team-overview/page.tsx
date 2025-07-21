@@ -30,7 +30,6 @@ export default function AdminPage() {
   const [editLoading, setEditLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const paginatedLogs = filteredLogs.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   const handleChangePage = (_: any, newPage: number) => setPage(newPage);
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
@@ -94,7 +93,9 @@ export default function AdminPage() {
 
   // Export only the filtered logs
   const handleExport = () => {
-    const csv = Papa.unparse(filteredLogs.map(log => ({
+    // Sort filteredLogs before exporting
+    const sortedExportLogs = [...filteredLogs].sort(compareDateTime);
+    const csv = Papa.unparse(sortedExportLogs.map(log => ({
       'User Name': log.userName,
       'Date': log.date,
       'Project Name': log.taskTitle,
@@ -185,6 +186,16 @@ export default function AdminPage() {
     setDeleteOpen(false);
     setDeleteTask(null);
   };
+
+  function compareDateTime(a: any, b: any) {
+    // Combine date and time into a Date object for accurate comparison
+    const dateA = new Date(`${a.date} ${a.time}`);
+    const dateB = new Date(`${b.date} ${b.time}`);
+    return dateB.getTime() - dateA.getTime();
+  }
+
+  const sortedLogs = [...filteredLogs].sort(compareDateTime);
+  const paginatedLogs = sortedLogs.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   return (
     <Box sx={{ p: { xs: 1, md: 4 }, minHeight: '100vh', background: '#f6f8fa' }}>
