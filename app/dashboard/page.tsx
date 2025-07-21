@@ -99,7 +99,7 @@ export default function DashboardPage() {
         <Typography variant="h6" mb={2} fontWeight={600}>Add a Task for Today</Typography>
         <form onSubmit={handleLogSubmit}>
           <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={2} alignItems={{ md: 'flex-end' }}>
-            <TextField label="Task Title" value={task.taskTitle} onChange={e => setTask({ ...task, taskTitle: e.target.value })} required sx={{ background: '#fff' }} size="small" />
+            <TextField label="Project Name" value={task.taskTitle} onChange={e => setTask({ ...task, taskTitle: e.target.value })} required sx={{ background: '#fff' }} size="small" />
             <TextField label="Description" value={task.description} onChange={e => setTask({ ...task, description: e.target.value })} required sx={{ background: '#fff' }} size="small" />
             <Button type="submit" variant="contained" color="primary" disabled={loading || !user} sx={{ minWidth: 120, fontWeight: 600, height: 40, boxShadow: 2, borderRadius: 2, textTransform: 'none', letterSpacing: 0.5 }}>Add Task</Button>
           </Box>

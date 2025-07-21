@@ -78,7 +78,7 @@ export default function AdminPage() {
     const csv = Papa.unparse(filteredLogs.map(log => ({
       'User Name': log.userName,
       'Date': log.date,
-      'Task Title': log.taskTitle,
+      'Project Name': log.taskTitle,
       'Description': log.description,
       'Time': log.time,
     })));
@@ -147,7 +147,7 @@ export default function AdminPage() {
                 <TableRow sx={{ background: '#f0f4f8' }}>
                   <TableCell sx={{ fontWeight: 700 }}>User Name</TableCell>
                   <TableCell sx={{ fontWeight: 700 }}>Date</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Task Title</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }}>Project Name</TableCell>
                   <TableCell sx={{ fontWeight: 700 }}>Description</TableCell>
                   <TableCell sx={{ fontWeight: 700 }}>Time</TableCell>
                 </TableRow>
