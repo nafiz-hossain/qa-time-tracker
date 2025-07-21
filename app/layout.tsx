@@ -33,7 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </Typography>
             <Box display="flex" alignItems="center" gap={2}>
               <Button color="inherit" component={Link} href="/dashboard">My Tasks</Button>
-              <Button color="inherit" component={Link} href="/admin">Team Overview</Button>
+              <Button color="inherit" component={Link} href="/team-overview">Team Overview</Button>
               {loading ? (
                 <CircularProgress color="inherit" size={24} />
               ) : user ? (

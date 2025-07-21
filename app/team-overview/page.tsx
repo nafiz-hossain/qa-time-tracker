@@ -96,6 +96,15 @@ export default function AdminPage() {
     URL.revokeObjectURL(url);
   };
 
+  // After fetching logs, apply filters by default
+  useEffect(() => {
+    if (logs.length > 0 || users.length > 0) {
+      setFilteredLogs(filteredLogsByUser);
+      setAppliedFilters({ user: selectedUser, from: dateFrom, to: dateTo });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [logs, users]);
+
   const handleEditClick = (log: any) => {
     setEditTask(log);
     setEditFields({ taskTitle: log.taskTitle, description: log.description });
@@ -121,7 +130,9 @@ export default function AdminPage() {
       // Refresh logs
       const snap = await getDocs(collection(db, 'tasks'));
       setLogs(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-      setFilteredLogs([]); // force re-filter
+      // Re-apply filters after edit
+      setFilteredLogs(filteredLogsByUser);
+      setAppliedFilters({ user: selectedUser, from: dateFrom, to: dateTo });
     } catch (e) {
       setError('Failed to update task');
     }

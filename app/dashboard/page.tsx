@@ -2,10 +2,12 @@
 import { useState } from 'react';
 import { Box, Typography, Paper, Button, TextField, List, ListItem, ListItemText, Divider, CircularProgress } from '@mui/material';
 import { db, auth } from '../firebase';
-import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import { Dialog, DialogTitle, DialogContent, DialogActions, IconButton } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 
 function getTodayDate() {
   const today = new Date();
@@ -24,6 +26,10 @@ export default function DashboardPage() {
   const [user, setUser] = useState<any>(null);
   const [error, setError] = useState('');
   const router = useRouter();
+  const [editOpen, setEditOpen] = useState(false);
+  const [editTask, setEditTask] = useState<any>(null);
+  const [editFields, setEditFields] = useState({ taskTitle: '', description: '' });
+  const [editLoading, setEditLoading] = useState(false);
 
   // Get current user
   React.useEffect(() => {
@@ -92,6 +98,41 @@ export default function DashboardPage() {
     setLoading(false);
   };
 
+  const handleEditClick = (log: any) => {
+    setEditTask(log);
+    setEditFields({ taskTitle: log.taskTitle, description: log.description });
+    setEditOpen(true);
+  };
+
+  const handleEditFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEditFields({ ...editFields, [e.target.name]: e.target.value });
+  };
+
+  const handleEditSave = async () => {
+    if (!editTask) return;
+    setEditLoading(true);
+    try {
+      const ref = doc(db, 'tasks', editTask.id);
+      await updateDoc(ref, {
+        taskTitle: editFields.taskTitle,
+        description: editFields.description,
+      });
+      setEditOpen(false);
+      setEditTask(null);
+      setEditFields({ taskTitle: '', description: '' });
+      if (user) fetchTodayTasks(user);
+    } catch (e) {
+      setError('Failed to update task');
+    }
+    setEditLoading(false);
+  };
+
+  const handleEditClose = () => {
+    setEditOpen(false);
+    setEditTask(null);
+    setEditFields({ taskTitle: '', description: '' });
+  };
+
   return (
     <Box sx={{ p: { xs: 1, md: 4 }, minHeight: '100vh', background: '#f6f8fa' }}>
       <Typography variant="h4" mb={3} fontWeight={700} color="primary.main">User Dashboard</Typography>
@@ -113,7 +154,13 @@ export default function DashboardPage() {
           {logs.length === 0 && <Typography color="text.secondary" sx={{ px: 2, py: 1 }}>No tasks for today yet.</Typography>}
           {logs.map((log, idx) => (
             <div key={log.id}>
-              <ListItem sx={{ background: idx % 2 === 0 ? '#fff' : '#f9fafb', borderRadius: 2, mb: 1, '&:hover': { background: '#e3eafc' } }}>
+              <ListItem sx={{ background: idx % 2 === 0 ? '#fff' : '#f9fafb', borderRadius: 2, mb: 1, '&:hover': { background: '#e3eafc' } }}
+                secondaryAction={
+                  <IconButton edge="end" aria-label="edit" onClick={() => handleEditClick(log)}>
+                    <EditIcon />
+                  </IconButton>
+                }
+              >
                 <ListItemText
                   primary={<span style={{ fontWeight: 600 }}>{log.time} - {log.taskTitle}</span>}
                   secondary={<span style={{ color: '#555' }}>{log.description}</span>}
@@ -124,6 +171,38 @@ export default function DashboardPage() {
           ))}
         </List>
       </Paper>
+      <Dialog open={editOpen} onClose={handleEditClose} fullWidth maxWidth="xs">
+        <DialogTitle>Edit Task</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Project Name"
+            name="taskTitle"
+            value={editFields.taskTitle}
+            onChange={handleEditFieldChange}
+            fullWidth
+            margin="normal"
+            required
+          />
+          <TextField
+            label="Description"
+            name="description"
+            value={editFields.description}
+            onChange={handleEditFieldChange}
+            fullWidth
+            margin="normal"
+            required
+            multiline
+            minRows={4}
+            sx={{ width: '100%', fontSize: '1.1rem' }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleEditClose} disabled={editLoading}>Cancel</Button>
+          <Button onClick={handleEditSave} variant="contained" disabled={editLoading}>
+            {editLoading ? <CircularProgress size={20} /> : 'Save'}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 } 
