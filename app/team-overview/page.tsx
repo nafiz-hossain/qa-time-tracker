@@ -3,12 +3,14 @@ import { useState, useEffect } from 'react';
 import { Box, Typography, Paper, Button, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Divider, CircularProgress, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, IconButton } from '@mui/material';
 import Papa from 'papaparse';
 import { db } from '../firebase';
-import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import { auth } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import EditIcon from '@mui/icons-material/Edit';
 import TablePagination from '@mui/material/TablePagination';
+import DeleteIcon from '@mui/icons-material/Delete';
+import DialogContentText from '@mui/material/DialogContentText';
 
 export default function AdminPage() {
   const [logs, setLogs] = useState<any[]>([]);
@@ -34,6 +36,9 @@ export default function AdminPage() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteTask, setDeleteTask] = useState<any>(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -154,6 +159,33 @@ export default function AdminPage() {
     setEditFields({ taskTitle: '', description: '' });
   };
 
+  const handleDeleteClick = (log: any) => {
+    setDeleteTask(log);
+    setDeleteOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteTask) return;
+    setDeleteLoading(true);
+    try {
+      await deleteDoc(doc(db, 'tasks', deleteTask.id));
+      setDeleteOpen(false);
+      setDeleteTask(null);
+      // Refresh logs
+      const snap = await getDocs(collection(db, 'tasks'));
+      setLogs(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      setFilteredLogs([]); // force re-filter
+    } catch (e) {
+      setError('Failed to delete task');
+    }
+    setDeleteLoading(false);
+  };
+
+  const handleDeleteClose = () => {
+    setDeleteOpen(false);
+    setDeleteTask(null);
+  };
+
   return (
     <Box sx={{ p: { xs: 1, md: 4 }, minHeight: '100vh', background: '#f6f8fa' }}>
       <Typography variant="h4" mb={3} fontWeight={700} color="primary.main">Admin Dashboard</Typography>
@@ -231,6 +263,11 @@ export default function AdminPage() {
                         <IconButton edge="end" aria-label="edit" size="small" onClick={() => handleEditClick(log)} sx={{ ml: 1 }}>
                           <EditIcon fontSize="small" />
                         </IconButton>
+                        {user && log.userId === user.uid && (
+                          <IconButton edge="end" aria-label="delete" color="error" size="small" onClick={() => handleDeleteClick(log)} sx={{ ml: 1 }}>
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        )}
                       </TableCell>
                       <TableCell>{log.time}</TableCell>
                     </TableRow>
@@ -279,6 +316,18 @@ export default function AdminPage() {
           <Button onClick={handleEditClose} disabled={editLoading}>Cancel</Button>
           <Button onClick={handleEditSave} variant="contained" disabled={editLoading}>
             {editLoading ? <CircularProgress size={20} /> : 'Save'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={deleteOpen} onClose={handleDeleteClose} fullWidth maxWidth="xs">
+        <DialogTitle>Delete Task</DialogTitle>
+        <DialogContent>
+          <DialogContentText>Are you sure you want to delete this task? This action cannot be undone.</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteClose} disabled={deleteLoading}>Cancel</Button>
+          <Button onClick={handleDeleteConfirm} color="error" variant="contained" disabled={deleteLoading}>
+            {deleteLoading ? <CircularProgress size={20} /> : 'Delete'}
           </Button>
         </DialogActions>
       </Dialog>
