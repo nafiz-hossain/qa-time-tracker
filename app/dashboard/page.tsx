@@ -8,6 +8,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { Dialog, DialogTitle, DialogContent, DialogActions, IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
+import Pagination from '@mui/material/Pagination';
 
 function getTodayDate() {
   const today = new Date();
@@ -30,6 +31,10 @@ export default function DashboardPage() {
   const [editTask, setEditTask] = useState<any>(null);
   const [editFields, setEditFields] = useState({ taskTitle: '', description: '' });
   const [editLoading, setEditLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const tasksPerPage = 10;
+  const paginatedLogs = logs.slice((page - 1) * tasksPerPage, page * tasksPerPage);
+  const handlePageChange = (_: any, value: number) => setPage(value);
 
   // Get current user
   React.useEffect(() => {
@@ -151,8 +156,8 @@ export default function DashboardPage() {
       <Paper sx={{ p: { xs: 1, md: 3 }, borderRadius: 3, boxShadow: 2 }}>
         <Typography variant="h6" mb={2} fontWeight={600}>Today's Tasks</Typography>
         <List>
-          {logs.length === 0 && <Typography color="text.secondary" sx={{ px: 2, py: 1 }}>No tasks for today yet.</Typography>}
-          {logs.map((log, idx) => (
+          {paginatedLogs.length === 0 && <Typography color="text.secondary" sx={{ px: 2, py: 1 }}>No tasks for today yet.</Typography>}
+          {paginatedLogs.map((log, idx) => (
             <div key={log.id}>
               <ListItem sx={{ background: idx % 2 === 0 ? '#fff' : '#f9fafb', borderRadius: 2, mb: 1, '&:hover': { background: '#e3eafc' } }}
                 secondaryAction={
@@ -166,10 +171,21 @@ export default function DashboardPage() {
                   secondary={<span style={{ color: '#555' }}>{log.description}</span>}
                 />
               </ListItem>
-              {idx < logs.length - 1 && <Divider />}
+              {idx < paginatedLogs.length - 1 && <Divider />}
             </div>
           ))}
         </List>
+        {logs.length > tasksPerPage && (
+          <Box display="flex" justifyContent="center" mt={2}>
+            <Pagination
+              count={Math.ceil(logs.length / tasksPerPage)}
+              page={page}
+              onChange={handlePageChange}
+              color="primary"
+              shape="rounded"
+            />
+          </Box>
+        )}
       </Paper>
       <Dialog open={editOpen} onClose={handleEditClose} fullWidth maxWidth="xs">
         <DialogTitle>Edit Task</DialogTitle>

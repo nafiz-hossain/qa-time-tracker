@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { auth } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import EditIcon from '@mui/icons-material/Edit';
+import TablePagination from '@mui/material/TablePagination';
 
 export default function AdminPage() {
   const [logs, setLogs] = useState<any[]>([]);
@@ -25,6 +26,14 @@ export default function AdminPage() {
   const [editTask, setEditTask] = useState<any>(null);
   const [editFields, setEditFields] = useState({ taskTitle: '', description: '' });
   const [editLoading, setEditLoading] = useState(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const paginatedLogs = filteredLogs.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const handleChangePage = (_: any, newPage: number) => setPage(newPage);
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -207,12 +216,12 @@ export default function AdminPage() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {filteredLogs.length === 0 ? (
+                {paginatedLogs.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={5} align="center">No logs found.</TableCell>
                   </TableRow>
                 ) : (
-                  filteredLogs.map((log, idx) => (
+                  paginatedLogs.map((log, idx) => (
                     <TableRow key={log.id} sx={{ background: idx % 2 === 0 ? '#fff' : '#f9fafb', '&:hover': { background: '#e3eafc' } }}>
                       <TableCell>{log.userName}</TableCell>
                       <TableCell>{log.date}</TableCell>
@@ -228,6 +237,15 @@ export default function AdminPage() {
                   ))
                 )}
               </TableBody>
+              <TablePagination
+                rowsPerPageOptions={[10, 20, 50]}
+                component="div"
+                count={filteredLogs.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
             </Table>
           </TableContainer>
         )}
