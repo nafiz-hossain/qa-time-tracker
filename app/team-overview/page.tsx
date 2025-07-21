@@ -39,10 +39,6 @@ export default function AdminPage() {
   });
   const paginatedLogs = sortedLogs.slice((page - 1) * rowsPerPage, page * rowsPerPage);
   const handlePageChange = (_: any, value: number) => setPage(value);
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteTask, setDeleteTask] = useState<any>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
